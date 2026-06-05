@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RAM Coffers: Why Physical Memory Topology Matters for AI Inference</title>
+    <meta
+      name="description"
+      content="A practical explanation of RAM Coffers, Elyan Labs' NUMA-distributed memory architecture for useful AI work on IBM POWER8 hardware."
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f5ef;
+        --ink: #1e2522;
+        --muted: #59625f;
+        --line: #cfc8bb;
+        --accent: #8b1e3f;
+        --panel: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #141817;
+          --ink: #f3efe7;
+          --muted: #b8c0bc;
+          --line: #39413e;
+          --accent: #e2b257;
+          --panel: #1d2321;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.68;
+        background: var(--bg);
+        color: var(--ink);
+      }
+      main {
+        width: min(840px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+      }
+      article {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: clamp(24px, 5vw, 56px);
+      }
+      h1 {
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        line-height: 1.05;
+        margin: 0 0 16px;
+        letter-spacing: 0;
+      }
+      h2 {
+        margin-top: 36px;
+        font-size: 1.35rem;
+      }
+      p {
+        margin: 16px 0;
+      }
+      a {
+        color: var(--accent);
+      }
+      .dek {
+        font-size: 1.15rem;
+        color: var(--muted);
+        margin-bottom: 24px;
+      }
+      .meta {
+        color: var(--muted);
+        font-size: 0.95rem;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 12px 0;
+        margin: 24px 0;
+      }
+      .callout {
+        border-left: 4px solid var(--accent);
+        padding: 12px 16px;
+        margin: 24px 0;
+        background: color-mix(in srgb, var(--accent) 10%, transparent);
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.95em;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <article>
+        <h1>RAM Coffers: Why Physical Memory Topology Matters for AI Inference</h1>
+        <p class="dek">
+          Most AI infrastructure stories start with a GPU. RAM Coffers starts
+          somewhere stranger and more interesting: the shape of memory inside an
+          IBM POWER8 machine.
+        </p>
+        <p class="meta">
+          Published by tracepatch-lab, June 2026. This article discusses
+          <a href="https://github.com/Scottcjn/ram-coffers">RAM Coffers</a>,
+          part of the Elyan Labs Proof of Physical AI stack.
+        </p>
+
+        <p>
+          RAM Coffers is a NUMA-distributed memory architecture for LLM
+          inference. Instead of treating RAM as one flat pool, it treats each
+          memory bank as a place with a role. The repository describes coffers
+          for general knowledge, science and technology, creative or long
+          context work, and niche history. A query is routed toward the coffer
+          whose domain signature best matches the request, then the system
+          activates that bank with thread affinity and cache prefetching before
+          generation.
+        </p>
+
+        <p>
+          That sounds academic until you notice the performance claim: 147
+          tokens per second on an IBM POWER8 S824, or about 8.8x stock
+          llama.cpp on the same class of hardware. The point is not merely that
+          old hardware can still run useful models. The sharper idea is that
+          physical topology is a signal. A NUMA node, a cache hierarchy, and an
+          instruction set are not annoyances to abstract away; they are knobs
+          the inference path can use.
+        </p>
+
+        <h2>A Different Kind of Efficiency</h2>
+        <p>
+          Modern AI optimization often focuses on compression, quantization, and
+          accelerator kernels. RAM Coffers adds a complementary question: can we
+          avoid moving irrelevant memory in the first place? Its resonance
+          routing selects a coffer before full weight fetch, and its collapse
+          path prunes candidate routes before expensive work begins. On POWER8,
+          the project also leans on architectural features such as DCBT
+          prefetching, VSX vector paths, and even hardware AES instructions
+          explored as attention-collapse primitives.
+        </p>
+
+        <p>
+          This is useful because memory bandwidth is often the ceiling for local
+          inference. If a model request only needs a particular slice of stored
+          knowledge, fetching every slice is wasteful. RAM Coffers reframes the
+          machine as a library with aisles, not a warehouse with one giant
+          loading dock. The route matters. The shelf matters. The latency of
+          walking to the shelf matters.
+        </p>
+
+        <div class="callout">
+          The practical insight: hardware age does not automatically mean
+          hardware irrelevance. With the right routing layer, a vintage server
+          can become a specialized inference node instead of e-waste.
+        </div>
+
+        <h2>Why This Fits RustChain</h2>
+        <p>
+          RAM Coffers belongs naturally beside RustChain and Proof of Antiquity.
+          RustChain rewards physical, attestable machines rather than disposable
+          virtual workers. RAM Coffers gives those machines a productive job:
+          perform local AI inference in a way that depends on their actual
+          memory and CPU characteristics. The same box can be understood as both
+          infrastructure and provenance.
+        </p>
+
+        <p>
+          That matters for decentralized AI because "more compute" is not a
+          complete strategy. A network also needs diversity, auditability, and
+          reasons for older machines to stay online. POWER8, PowerPC Macs,
+          legacy servers, and other uncommon systems are awkward for the cloud
+          monoculture, but they are rich with physical fingerprints. RAM Coffers
+          turns that awkwardness into an architectural feature.
+        </p>
+
+        <h2>What Builders Should Take From It</h2>
+        <p>
+          The reusable pattern is not limited to POWER8. A builder can ask three
+          questions on any local inference system: what memory regions are
+          distinct, what work should be routed to each region, and what
+          hardware-specific operations make the route cheaper? On Apple Silicon,
+          that may mean MLX-oriented memory behavior. On x86, it may mean NUMA
+          placement, huge pages, or cache-aware batching. On vintage hardware,
+          it may mean accepting constraints and designing with them instead of
+          pretending the machine is a tiny cloud instance.
+        </p>
+
+        <p>
+          RAM Coffers is compelling because it treats inference as situated
+          computation. The prompt, the model weights, the memory bank, the CPU
+          instruction, and the chain identity all live in one story. That story
+          is exactly what makes Elyan Labs projects interesting: they do not ask
+          old machines to cosplay as new ones. They ask what the old machines
+          uniquely know how to do.
+        </p>
+
+        <p>
+          Read the project here:
+          <a href="https://github.com/Scottcjn/ram-coffers"
+            >github.com/Scottcjn/ram-coffers</a
+          >.
+        </p>
+      </article>
+    </main>
+  </body>
+</html>
