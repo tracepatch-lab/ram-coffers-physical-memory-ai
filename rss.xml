@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>tracepatch-lab Elyan Labs Notes</title>
+    <link>https://tracepatch-lab.github.io/ram-coffers-physical-memory-ai/</link>
+    <description>Short technical essays on Elyan Labs projects.</description>
+    <item>
+      <title>RAM Coffers: Why Physical Memory Topology Matters for AI Inference</title>
+      <link>https://tracepatch-lab.github.io/ram-coffers-physical-memory-ai/</link>
+      <guid>https://tracepatch-lab.github.io/ram-coffers-physical-memory-ai/</guid>
+      <pubDate>Fri, 05 Jun 2026 04:30:00 GMT</pubDate>
+      <description>Most AI infrastructure stories start with a GPU. RAM Coffers starts with the shape of memory inside an IBM POWER8 machine.</description>
+    </item>
+  </channel>
+</rss>
